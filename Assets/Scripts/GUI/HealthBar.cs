@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HealthBar : MonoBehaviour {
 	
-	public float barDisplay=0.0f; //current progress
+	public float barDisplay=1.0f; //current progress
 	public Vector2 pos = new Vector2(20,40);
 	public Vector2 size = new Vector2(100,20);
 	public Texture2D emptyTex;
@@ -22,20 +22,24 @@ public class HealthBar : MonoBehaviour {
 		GUI.EndGroup();
 		GUI.EndGroup();
 
+		if (GUI.Button (new Rect(10, 10, 100, 30), "Take Damage")){
+			barDisplay = barDisplay-0.05f;
+		}
+		if (barDisplay<=0.0f){
+			GUI.Box (new Rect(Screen.width/2,Screen.height/2,100,50),"You died");
+		}
+
 	}
-	public void modifyHealth(float amount) {
-		barDisplay = barDisplay - amount;
-		Update();
-	}
+
 	
 	private void InitStyles()
 	{
 		if (currentStyle == null) {
 			currentStyle = new GUIStyle (GUI.skin.box);
-			currentStyle.normal.background = MakeTex (2, 2, new Color (1f, 0f, 0f, 1f));
-		}
-		if (barDisplay > 0.5f) {
 			currentStyle.normal.background = MakeTex (2, 2, new Color (0f, 1f, 0f, 1f));
+		}
+		if (barDisplay < 0.5f) {
+			currentStyle.normal.background = MakeTex (2, 2, new Color (1f, 0f, 0f, 1f));
 		}
 	}
 	private Texture2D MakeTex( int width, int height, Color col )
@@ -49,15 +53,5 @@ public class HealthBar : MonoBehaviour {
 		result.SetPixels( pix );
 		result.Apply();
 		return result;
-	}
-
-	void Update() {
-		//for this example, the bar display is linked to the current time,
-		//however you would set this value based on your desired display
-		//eg, the loading progress, the player's health, or whatever.
-		barDisplay = (Time.time*0.05f);
-		//      barDisplay = MyControlScript.staticHealth;
-
-		
 	}
 }
